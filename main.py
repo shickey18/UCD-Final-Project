@@ -20,13 +20,13 @@ data = pd.read_csv(r'C:\Users\seanh\Downloads\healthcare-dataset-stroke-data.csv
 
 # Copy data for work
 df = data.copy()
-df.head()
+print(df.head())
 
 # Drop unneeded column
 df.drop(['id'], axis=1, inplace=True)
-df.head()
-df.describe()
-df.info()
+print(df.head())
+print(df.describe())
+print(df.info())
 
 
 def isnull_table(data):
@@ -44,7 +44,7 @@ def isnull_table(data):
     return missing_data
 
 # Create isnull table for our DataFrame
-isnull_table(df)
+print(isnull_table(df))
 
 # Impute NaN values with mean BMI values
 df=df.fillna(np.mean(df['bmi']))
@@ -59,6 +59,7 @@ sns.kdeplot(data=df_num, fill=True)
 plt.title('KDE Plot of Numerical Data', loc='center')
 plt.xlabel('Distribution')
 plt.ylabel('Densty')
+plt.show()
 
 # Plot boxplot of age vs. bmi
 fig, ax = plt.subplots(figsize= (20,8))
@@ -92,6 +93,7 @@ def create_hists(data):
         ax.set_title(val, fontweight='bold')
         ax.grid(linestyle='--', axis='y')
         plt.hist(data[val], color='forestgreen', histtype='bar', align='mid')
+        plt.show()
 
 # Plot histograms for our DataFrame
 create_hists(df_cat)
@@ -108,7 +110,8 @@ def create_heatmap(data):
     """
     fig = plt.figure(figsize=(10, 8))
     correlation_matrix = data.corr()
-    return sns.heatmap(data=correlation_matrix, annot=True, square=True, cmap='coolwarm')
+    sns.heatmap(data=correlation_matrix, annot=True, square=True, cmap='coolwarm')
+    plt.show()
 
 
 # Plot heatmap of the Correlation Matrix between the features in our DataFrame
@@ -120,13 +123,13 @@ df["Residence_type"] = df["Residence_type"].apply(lambda x: 1 if x=="Urban" else
 df["ever_married"] = df["ever_married"].apply(lambda x: 1 if x=="Yes" else 0)
 
 # Count instances of 'Unkown' in 'smoking_status'
-data.isin(['Unknown']).sum(axis=0)
+print(data.isin(['Unknown']).sum(axis=0))
 
 # Drop 'unkown' values in 'smoking_status' feature
 df.drop(df.loc[df['smoking_status']=='Unknown'].index, inplace=True)
 
 # Ensure rows with 'Unkown' are dropped
-df['smoking_status'].unique()
+print(df['smoking_status'].unique())
 
 # Employ One Hot encoding on features smoking_status and work_type
 df_dummies = df[['smoking_status', 'work_type']]
@@ -181,7 +184,7 @@ def score_model(model):
 
 # Create DataFrame of model training and testing scores
 df_scores = score_model(model_list)
-df_scores.head()
+print(df_scores.head())
 
 
 def model_eval(model):
@@ -201,7 +204,7 @@ def model_eval(model):
         metrics.plot_roc_curve(model, X_test, y_test)
 
 # Generate model evaluation metrics and visualizations
-model_eval(model_list)
+print(model_eval(model_list))
 
 
 def hyperparam_tuning(model, params):
@@ -245,7 +248,7 @@ def cross_val(model):
 
 # Create DataFrame of cross validation scores
 cv_scores = cross_val(model_list)
-cv_scores.head()
+print(cv_scores.head())
 
 # Create parameter dictionary for KNeighborsClassifier
 param_kn = {
@@ -300,22 +303,22 @@ tuned_scores = score_model(tuned_list)
 
 # Rename columns to signify tuned scores
 tuned_scores.rename(columns={'ML Model': 'Tuned Model', 'Training Score': 'Tuned Training Score', 'Testing Score': 'Tuned Testing Score'}, inplace=True)
-tuned_scores.head()
+print(tuned_scores.head())
 
 # Create DataFrame of tuned cross validation scores
 tuned_cv_scores = cross_val(tuned_list)
 
 # Rename columns to signify tuned scores
 tuned_cv_scores.rename(columns={'ML Model': 'Tuned Model', 'CV Score': 'Tuned CV Score', 'CV Mean': 'Tuned CV Mean', 'CV STD': 'Tuned CV STD'}, inplace=True)
-tuned_cv_scores.head()
+print(tuned_cv_scores.head())
 
 # Merge untuned and tuned scores DataFrames
 df_scores = df_scores.merge(tuned_scores, left_index=True, right_index=True, how='left')
-df_scores.head()
+print(df_scores.head())
 
 # Merge untuned and tuned cross validation scores DataFrames
 cv_scores = cv_scores.merge(tuned_cv_scores, left_index=True, right_index=True, how='left')
-cv_scores.head()
+print(cv_scores.head())
 
 
 def val_set_score(model):
@@ -342,7 +345,7 @@ def val_set_score(model):
 
 # Create a DataFrame of scores using the reserved validation set
 df_val_set_scores = val_set_score(tuned_list)
-df_val_set_scores.head()
+print(df_val_set_scores.head())
 
 
 def val_set_eval(model):
