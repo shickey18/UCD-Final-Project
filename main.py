@@ -1,3 +1,5 @@
+import requests
+import json
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,6 +16,25 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import cross_val_score
+
+def api_to_df(url):
+    """Import API and convert to pandas DataFrame
+
+    Args:
+    url(api url): The api to be imported and whose data is to be converted to a DataFrame
+
+    Returns:
+    A DataFrame of the data from the api.
+    """
+    r = requests.get(url).json()
+    json_string = json.dumps(r, indent=2, sort_keys=True)
+    data = json.loads(json_string)
+    data = data[1]
+    df = pd.DataFrame(data)
+    return df
+
+# Create DataFrame from API data
+df_api = api_to_df('http://api.worldbank.org/v2/country/all/indicator/SP.POP.TOTL?format=json')
 
 # Import data from csv
 data = pd.read_csv(r'C:\Users\seanh\Downloads\healthcare-dataset-stroke-data.csv')
